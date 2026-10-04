@@ -22,6 +22,8 @@ def test_final_assignments_exist():
         
         # valid cluster IDs
         assert pd.api.types.is_integer_dtype(df['cluster_id'])
+        assert set(df['cluster_id'].unique()) == {0, 1, 2, 3}
+        assert df['cluster_id'].nunique() == 4
         
 def test_no_learner_id_in_features():
     # Ensure learner_id is not included in the feature matrices
