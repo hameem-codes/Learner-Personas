@@ -16,6 +16,10 @@ def test_persona_assignments():
     
     # No learner appears twice
     assert df['learner_id'].nunique() == 6000
+    
+    # Persona populations check
+    pcts = df['cluster_id'].value_counts(normalize=True) * 100
+    assert abs(pcts.sum() - 100.0) < 1e-5
 
 def test_persona_reports_exist():
     reports_dir = PROJECT_ROOT / 'reports' / 'personas'
@@ -29,3 +33,15 @@ def test_persona_reports_exist():
         assert "Streak Maintainers" in content
         assert "Weekend Warriors" in content
         assert "Power Learners" in content
+        
+        # no unsupported demographic/psychological claims
+        assert "lazy" not in content.lower()
+        assert "addicted" not in content.lower()
+        assert "motivated" not in content.lower()
+        assert "lazy" not in content.lower()
+        
+def test_persona_evidence_exists():
+    evidence_path = DATA_DIR / 'outputs' / 'profiles' / 'persona_evidence.csv'
+    assert evidence_path.exists()
+    df = pd.read_csv(evidence_path)
+    assert not df.empty
